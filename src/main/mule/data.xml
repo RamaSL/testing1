@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d3bdd1d7-cbcd-47ee-9b24-099750c8ca24" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="c9323c77-241a-49fd-8508-2d877a6015d3" >
+		<db:my-sql-connection host="database-2.cax0u9xczu2j.ap-south-1.rds.amazonaws.com" port="3306" user="admin" password="adminadmin" database="nanna" />
+	</db:config>
+	<flow name="dataFlow" doc:id="cc030320-ce8f-4f70-9726-8a665aadb80e" >
+		<http:listener doc:name="Listener" doc:id="2a706d8a-ee5f-4dea-8e62-e6740176053e" config-ref="HTTP_Listener_config" path="/data"/>
+		<db:select doc:name="Select" doc:id="f82e0851-ae71-4b59-a8f4-ea82a448084f" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from student]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="e2e7f705-3cde-4f88-a346-f22ed131e15d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
